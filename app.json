@@ -5,6 +5,8 @@
         "version": "1.0.0",
         "description": "A simple todo app built with React Native",
         "orientation": "portrait",
+        "owner": "KRShanto",
+        "githubUrl": "https://github.com/KRShanto",        
         "icon": "./assets/icon.png",
         "userInterfaceStyle": "light",
         "splash": {

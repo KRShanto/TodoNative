@@ -3,6 +3,18 @@
     "version": "1.0.0",
     "main": "node_modules/expo/AppEntry.js",
     "description": "A simple todo app built with React Native",
+    "author": {
+        "name": "KR Shanto",
+        "email": "khalilorrahman2005@gmail.com",
+        "url": "https://github.com/KRShanto",
+        "github": "github.com/KRShanto"
+    },
+    "license": "MIT",
+    "readme": "README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/KRShanto/TodoNative"
+    },
     "scripts": {
         "start": "expo start",
         "android": "expo start --android",
