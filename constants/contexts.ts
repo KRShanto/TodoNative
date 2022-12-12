@@ -5,10 +5,12 @@ export const TodoProjectContext =
 
 export type TodoProjectType = {
     name: string;
-    todos: {
-        name: string;
-        completed: boolean;
-    }[];
+    todos: TodoType[];
+};
+
+export type TodoType = {
+    name: string;
+    completed: boolean;
 };
 
 export type TodoProjectContextType = {

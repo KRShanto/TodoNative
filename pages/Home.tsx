@@ -3,10 +3,9 @@ import {
     StyleSheet,
     Text,
     View,
-    ScrollView,
     TextInput,
-    Button,
     FlatList,
+    Pressable,
 } from "react-native";
 import { useState } from "react";
 import { useContext } from "react";
@@ -150,10 +149,9 @@ export default function Home({ navigation }: { navigation: any }) {
                 </Text>
                 <TextInput
                     placeholder="Project name"
-                    placeholderTextColor="white"
+                    placeholderTextColor="gray"
                     onChangeText={setProjectText}
                     keyboardType="default"
-                    returnKeyType="done"
                     value={projectText}
                     ref={projectTextRef}
                     style={{
@@ -167,44 +165,142 @@ export default function Home({ navigation }: { navigation: any }) {
                         alignSelf: "center",
                     }}
                 />
-                <Button title="Create" onPress={handleCreatProject} />
+                {/* <Button title="Create" onPress={handleCreatProject} /> */}
+                <Pressable
+                    style={{
+                        padding: 5,
+                        width: 90,
+                        alignSelf: "center",
+                        borderRadius: 5,
+                        backgroundColor: "#25a860",
+                    }}
+                    onPress={handleCreatProject}
+                >
+                    <Text
+                        style={{
+                            color: "white",
+                            textAlign: "center",
+                            fontSize: 17,
+                            fontWeight: "bold",
+                        }}
+                    >
+                        Create
+                    </Text>
+                </Pressable>
             </View>
 
             {/* Show a list of projects */}
-            <View>
-                <Text>Projects</Text>
+            <View
+                style={{
+                    marginTop: 30,
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 27,
+                        color: "#00c3ff",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        marginBottom: 10,
+                    }}
+                >
+                    Your Projects
+                </Text>
 
                 <FlatList
                     data={projectContext?.projects}
                     renderItem={({ item }) => {
                         return (
-                            <View>
-                                <View>
-                                    <Text>{item.name}</Text>
-                                    <Text>{item.todos.length}</Text>
-                                </View>
+                            <View
+                                style={{
+                                    width: "95%",
+                                    marginVertical: 2,
+                                    borderRadius: 5,
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                    alignSelf: "center",
+                                    padding: 10,
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 20,
+                                        color: "white",
+                                        marginBottom: 10,
+                                        marginLeft: 10,
+                                    }}
+                                >
+                                    {item.name}
+                                </Text>
 
-                                <View>
-                                    <Button
-                                        title="View"
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        justifyContent: "space-around",
+                                    }}
+                                >
+                                    <Pressable
+                                        style={{
+                                            backgroundColor: "#0948ad",
+                                            paddingVertical: 3,
+                                            paddingHorizontal: 20,
+                                            borderRadius: 5,
+                                        }}
                                         onPress={() => {
                                             navigation.navigate("Project", {
                                                 projectName: item.name,
                                             });
                                         }}
-                                    />
-                                    <Button
-                                        title="Delete"
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "white",
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            View
+                                        </Text>
+                                    </Pressable>
+                                    <Pressable
+                                        style={{
+                                            backgroundColor: "#990814",
+                                            paddingVertical: 3,
+                                            paddingHorizontal: 20,
+                                            borderRadius: 5,
+                                        }}
                                         onPress={() =>
                                             handleDeleteProject(item)
                                         }
-                                    />
-                                    <Button
-                                        title="Rename"
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "white",
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            Delete
+                                        </Text>
+                                    </Pressable>
+                                    <Pressable
+                                        style={{
+                                            backgroundColor: "#a83f0a",
+                                            paddingVertical: 3,
+                                            paddingHorizontal: 20,
+                                            borderRadius: 5,
+                                        }}
                                         onPress={() => {
                                             setRenderDialog(item);
                                         }}
-                                    />
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "white",
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            Rename
+                                        </Text>
+                                    </Pressable>
                                 </View>
                             </View>
                         );
