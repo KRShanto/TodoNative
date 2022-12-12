@@ -133,8 +133,6 @@ export default function Project({ route }: { route: any }) {
 
     return (
         <View style={styles.container}>
-            <Text>{projectName}</Text>
-
             <View>
                 {/* Show a form to create new todos */}
                 <Text

@@ -14,7 +14,7 @@
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import Home from "./pages/Home";
 import Project from "./pages/Project";
@@ -26,27 +26,14 @@ const Stack = createNativeStackNavigator();
 export default function App() {
     const [projects, setProjects] = useState([
         {
-            name: "Project 1",
+            name: "Everyday Tasks",
             todos: [
                 {
-                    name: "Todo 1",
+                    name: "Brush Teeth",
                     completed: false,
                 },
                 {
-                    name: "Todo 2",
-                    completed: false,
-                },
-            ],
-        },
-        {
-            name: "Project 2",
-            todos: [
-                {
-                    name: "Todo 1",
-                    completed: false,
-                },
-                {
-                    name: "Todo 2",
+                    name: "Feed cat",
                     completed: false,
                 },
             ],
