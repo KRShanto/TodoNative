@@ -32,7 +32,6 @@ export default function Home({ navigation }: { navigation: any }) {
 
         // check if the project text is empty
         if (projectText === "") {
-            console.log("Project text is empty");
             return;
         }
         // check if the project already exists
@@ -40,7 +39,6 @@ export default function Home({ navigation }: { navigation: any }) {
             (project) => project.name === projectText
         );
         if (isProjectExists) {
-            console.log("Project already exists");
             return;
         }
 
@@ -60,7 +58,6 @@ export default function Home({ navigation }: { navigation: any }) {
     function handleOk() {
         // check if the project name is empty
         if (newProjectName === "") {
-            console.log("Project name is empty");
             return;
         }
 
@@ -69,7 +66,6 @@ export default function Home({ navigation }: { navigation: any }) {
             (project) => project.name === newProjectName
         );
         if (isProjectExists) {
-            console.log("Project already exists");
             return;
         }
 
@@ -317,9 +313,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.body.bg,
-        // paddingTop: 40,
-        // alignItems: "center",
-        // justifyContent: "center",
         paddingBottom: 150,
     },
 });

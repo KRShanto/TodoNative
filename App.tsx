@@ -53,10 +53,6 @@ export default function App() {
         },
     ]);
 
-    useEffect(() => {
-        console.log("projects", projects);
-    }, [projects]);
-
     return (
         <TodoProjectContext.Provider value={{ projects, setProjects }}>
             <NavigationContainer>

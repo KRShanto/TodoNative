@@ -37,7 +37,6 @@ export default function Project({ route }: { route: any }) {
         }
         // check if the todo text is empty
         if (todoText === "") {
-            console.log("Todo text is empty");
             return;
         }
         // create a new todo
