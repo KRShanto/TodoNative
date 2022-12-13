@@ -13,12 +13,15 @@ import { TodoContext, ProjectContext } from "../constants/contexts";
 import Dialog from "react-native-dialog";
 import React from "react";
 import colors from "../constants/colors";
+import createProject from "../utils/firebase/projects/createProject";
+import removeProject from "../utils/firebase/projects/removeProject";
+import renameProject from "../utils/firebase/projects/renameProject";
 
 export default function Home({ navigation }: { navigation: any }) {
     const [projectText, setProjectText] = useState("");
     const [renamedProjectName, setRenamedProjectName] = useState("");
     const [renderDialog, setRenderDialog] = useState<string | null>(
-        // name | null
+        // id | null
         null
     );
 
@@ -26,7 +29,7 @@ export default function Home({ navigation }: { navigation: any }) {
     const todoContext = useContext(TodoContext);
     const projectTextRef = React.useRef<TextInput>(null);
 
-    function handleCreatProject() {
+    async function handleCreateProject() {
         if (!projectContext) {
             return;
         }
@@ -47,16 +50,28 @@ export default function Home({ navigation }: { navigation: any }) {
             return;
         }
 
-        // create a new project
-        const newProject = {
-            name: projectText,
-        };
-        // add the new project to the projects array
-        setProjects([...projects, newProject]);
+        const newProjectName = projectText;
+
         // clear the project text
         setProjectText("");
         // unfocus the input
         projectTextRef.current?.blur();
+
+        // create the project in the database
+        const newProjectId = await createProject(newProjectName);
+
+        if (newProjectId) {
+            // add the new project to the projects array
+            setProjects([
+                ...projects,
+                {
+                    name: newProjectName,
+                    id: newProjectId,
+                },
+            ]);
+        } else {
+            // TODO handle error in an alert box
+        }
     }
 
     function handleRename() {
@@ -75,7 +90,7 @@ export default function Home({ navigation }: { navigation: any }) {
 
         // rename the project
         const newProjects = projectContext?.projects.map((project) => {
-            if (project.name === renderDialog?.toString()) {
+            if (project.id === renderDialog?.toString()) {
                 return {
                     ...project,
                     name: renamedProjectName,
@@ -84,33 +99,24 @@ export default function Home({ navigation }: { navigation: any }) {
             return project;
         });
 
-        if (!newProjects) {
+        if (!newProjects || !renderDialog) {
             return;
         }
 
-        // rename the todos of the project
-        const newTodos = todoContext?.todos.map((todo) => {
-            if (todo.project === renderDialog?.toString()) {
-                return {
-                    ...todo,
-                    project: renamedProjectName,
-                };
-            }
-            return todo;
-        });
+        // update the database
+        renameProject(renderDialog, renamedProjectName);
 
-        if (!newTodos) {
-            return;
-        }
+        // // update the todo state
+        // todoContext?.setTodos(newTodos);
 
-        // update the todo state
-        todoContext?.setTodos(newTodos);
         // update the project state
         projectContext?.setProjects(newProjects);
         // clear the project name
         setRenamedProjectName("");
         // close the dialog
         setRenderDialog(null);
+
+        // rename the project in the database
     }
 
     function handleCancelRename() {
@@ -118,15 +124,18 @@ export default function Home({ navigation }: { navigation: any }) {
         setRenderDialog(null);
     }
 
-    function handleDeleteProject(projectName: string) {
+    function handleDeleteProject(projectId: string) {
+        // delete the project from the database
+        removeProject(projectId);
+
         // delete the project
         const newProjects = projectContext?.projects.filter(
-            (project) => project.name !== projectName
+            (project) => project.id !== projectId
         );
 
         // delete the todos of the project
         const newTodos = todoContext?.todos.filter(
-            (todo) => todo.project !== projectName
+            (todo) => todo.projectId !== projectId
         );
 
         if (!newProjects) {
@@ -147,8 +156,7 @@ export default function Home({ navigation }: { navigation: any }) {
             <Dialog.Container visible={!!renderDialog}>
                 <Dialog.Title>Rename project</Dialog.Title>
                 <Dialog.Description>
-                    Enter the new project name for the project{" "}
-                    {renderDialog?.toString()}
+                    Enter the new project name
                 </Dialog.Description>
                 <Dialog.Input
                     value={renamedProjectName}
@@ -200,7 +208,7 @@ export default function Home({ navigation }: { navigation: any }) {
                         borderRadius: 5,
                         backgroundColor: "#25a860",
                     }}
-                    onPress={handleCreatProject}
+                    onPress={handleCreateProject}
                 >
                     <Text
                         style={{
@@ -274,6 +282,7 @@ export default function Home({ navigation }: { navigation: any }) {
                                         }}
                                         onPress={() => {
                                             navigation.navigate("Project", {
+                                                projectId: item.id,
                                                 projectName: item.name,
                                             });
                                         }}
@@ -295,7 +304,7 @@ export default function Home({ navigation }: { navigation: any }) {
                                             borderRadius: 5,
                                         }}
                                         onPress={() =>
-                                            handleDeleteProject(item.name)
+                                            handleDeleteProject(item.id)
                                         }
                                     >
                                         <Text
@@ -315,7 +324,7 @@ export default function Home({ navigation }: { navigation: any }) {
                                             borderRadius: 5,
                                         }}
                                         onPress={() => {
-                                            setRenderDialog(item.name);
+                                            setRenderDialog(item.id);
                                         }}
                                     >
                                         <Text

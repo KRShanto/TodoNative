@@ -11,6 +11,9 @@ import { useContext } from "react";
 import { ProjectContext, TodoContext, TodoType } from "../constants/contexts";
 import React from "react";
 import colors from "../constants/colors";
+import updateTodo from "../utils/firebase/todos/updateTodos";
+import deleteTodo from "../utils/firebase/todos/deleteTodo";
+import createTodo from "../utils/firebase/todos/createTodo";
 
 export default function Project({ route }: { route: any }) {
     const [todoText, setTodoText] = useState("");
@@ -19,15 +22,16 @@ export default function Project({ route }: { route: any }) {
     const todoContext = useContext(TodoContext);
     // ref of the todo text input
     const todoTextRef = React.useRef<TextInput>(null);
-    // current project name
-    const projectName: string = route.params.projectName;
-    // const currentProject = projectContext?.projects.find(
-    //     (project) => project.name === projectName
-    // );
+    // current project id
+    const projectId: string = route.params.projectId;
+
     // current todos
     const currentTodos = todoContext?.todos.filter(
-        (todo) => todo.project === projectName
+        (todo) => todo.projectId === projectId
     );
+
+    console.log("currentTodos: ", currentTodos);
+    console.log("todos: ", todoContext?.todos);
 
     const sortedTodos = currentTodos?.sort((a, b) => {
         if (a.completed && !b.completed) {
@@ -39,7 +43,7 @@ export default function Project({ route }: { route: any }) {
         return 0;
     });
 
-    function handleCreateTodo() {
+    async function handleCreateTodo() {
         if (!projectContext) {
             return;
         }
@@ -47,42 +51,63 @@ export default function Project({ route }: { route: any }) {
         if (todoText === "") {
             return;
         }
-        // create a new todo
-        const newTodo = {
-            task: todoText,
-            completed: false,
-            project: projectName,
-        };
-
-        if (!currentTodos) {
-            return;
-        }
-
-        // add the new todo to the todos array
-        todoContext?.setTodos([...currentTodos, newTodo]);
+        const newTodoText = todoText;
 
         // clear the todo text
         setTodoText("");
 
         // unfocus the input
         todoTextRef.current?.blur();
+
+        // create a new todo in the database
+        const newTodoID = await createTodo(projectId, newTodoText);
+
+        if (newTodoID) {
+            // create a new todo
+            const newTodo = {
+                id: newTodoID,
+                task: newTodoText,
+                completed: false,
+                projectId,
+            };
+
+            if (!currentTodos) {
+                return;
+            }
+
+            // add the new todo to the todos array
+            todoContext?.setTodos([...currentTodos, newTodo]);
+        } else {
+            // TODO: show an error message to the user (alert)
+        }
     }
 
-    function handleCompleteTodo(todoTask: string) {
+    function handleCompleteTodo(todoId: string) {
         if (!currentTodos) {
             return;
         }
 
+        // get the todo
+        const todo = currentTodos.find((todo) => todo.id === todoId);
+
+        if (!todo) {
+            return;
+        }
+
+        // update the todo in the database
+        updateTodo(todoId, todo.task, true);
+
         // create a new todo with the new todo
         const newTodo = {
-            task: todoTask,
+            id: todoId,
+            task: todo.task,
             completed: true,
-            project: projectName,
+            projectId,
         };
 
         // remove the old todo
         const newTodos = todoContext?.todos.filter(
-            (todo) => todo.task !== todoTask
+            (todo) => todo.id !== todoId
         );
 
         if (!newTodos) {
@@ -93,14 +118,17 @@ export default function Project({ route }: { route: any }) {
         todoContext?.setTodos([...newTodos, newTodo]);
     }
 
-    function handleDeleteTodo(item: TodoType) {
+    function handleDeleteTodo(todoId: string) {
         if (!currentTodos) {
             return;
         }
 
+        // delete the todo from the database
+        deleteTodo(todoId);
+
         // create a new list of todos without the deleted todo
         const newTodos = todoContext?.todos.filter(
-            (todo) => todo.task !== item.task
+            (todo) => todo.id !== todoId
         );
 
         if (!newTodos) {
@@ -185,6 +213,7 @@ export default function Project({ route }: { route: any }) {
                 >
                     Todos
                 </Text>
+                {/* TODO: Put the above code into FlatList's header prop */}
                 <FlatList
                     data={sortedTodos}
                     renderItem={({ item }) => (
@@ -238,7 +267,7 @@ export default function Project({ route }: { route: any }) {
                                             borderRadius: 5,
                                         }}
                                         onPress={() =>
-                                            handleCompleteTodo(item.task)
+                                            handleCompleteTodo(item.id)
                                         }
                                     >
                                         <Text
@@ -259,7 +288,9 @@ export default function Project({ route }: { route: any }) {
                                             paddingHorizontal: 20,
                                             borderRadius: 5,
                                         }}
-                                        onPress={() => handleDeleteTodo(item)}
+                                        onPress={() =>
+                                            handleDeleteTodo(item.id)
+                                        }
                                     >
                                         <Text
                                             style={{
@@ -273,7 +304,34 @@ export default function Project({ route }: { route: any }) {
                                     </Pressable>
                                 </View>
                             ) : (
-                                <></>
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        justifyContent: "space-around",
+                                    }}
+                                >
+                                    <Pressable
+                                        style={{
+                                            backgroundColor: "#990814",
+                                            paddingVertical: 3,
+                                            paddingHorizontal: 20,
+                                            borderRadius: 5,
+                                        }}
+                                        onPress={() =>
+                                            handleDeleteTodo(item.id)
+                                        }
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "white",
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {" "}
+                                            Delete{" "}
+                                        </Text>
+                                    </Pressable>
+                                </View>
                             )}
                         </View>
                     )}

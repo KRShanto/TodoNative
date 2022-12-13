@@ -14,7 +14,7 @@
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Home from "./screens/Home";
 import Project from "./screens/Project";
@@ -25,13 +25,33 @@ import {
     TodoType,
 } from "./constants/contexts";
 import colors from "./constants/colors";
+import getProjects from "./utils/firebase/projects/getProjects";
+import getTodos from "./utils/firebase/todos/getTodos";
 
 const Stack = createNativeStackNavigator();
 
 // TODO: set security rules for the database
+// TODO: add a loading screen
 export default function App() {
     const [projects, setProjects] = useState<ProjectType[]>([]);
     const [todos, setTodos] = useState<TodoType[]>([]);
+
+    useEffect(() => {
+        async function getProjectsFromFirebase() {
+            const projects = await getProjects();
+            setProjects(projects);
+        }
+        getProjectsFromFirebase();
+    }, []);
+
+    useEffect(() => {
+        async function getTodosFromFirebase() {
+            const todos = await getTodos();
+            console.log("Collection todos: ", todos);
+            setTodos(todos);
+        }
+        getTodosFromFirebase();
+    }, []);
 
     return (
         <TodoContext.Provider value={{ todos, setTodos }}>
