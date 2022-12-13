@@ -1,13 +1,15 @@
 import React from "react";
 
 export type ProjectType = {
+    id: string;
     name: string;
 };
 
 export type TodoType = {
+    id: string;
     task: string;
     completed: boolean;
-    project: string;
+    projectId: string;
 };
 
 export type TodoContextType = {
