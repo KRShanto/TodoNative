@@ -16,8 +16,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { useState } from "react";
-import Home from "./pages/Home";
-import Project from "./pages/Project";
+import Home from "./screens/Home";
+import Project from "./screens/Project";
 import { TodoProjectContext } from "./constants/contexts";
 import colors from "./constants/colors";
 
