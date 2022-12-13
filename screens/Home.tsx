@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useContext } from "react";
-// import { TodoProjectContext, TodoProjectType } from "../constants/contexts";
 import { TodoContext, ProjectContext } from "../constants/contexts";
 import Dialog from "react-native-dialog";
 import React from "react";
@@ -17,7 +16,7 @@ import colors from "../constants/colors";
 
 export default function Home({ navigation }: { navigation: any }) {
     const [projectText, setProjectText] = useState("");
-    const [newProjectName, setNewProjectName] = useState("");
+    const [renamedProjectName, setRenamedProjectName] = useState("");
     const [renderDialog, setRenderDialog] = useState<string | null>(
         // name | null
         null
@@ -38,10 +37,12 @@ export default function Home({ navigation }: { navigation: any }) {
         if (projectText === "") {
             return;
         }
+
         // check if the project already exists
         const isProjectExists = projects.find(
             (project) => project.name === projectText
         );
+
         if (isProjectExists) {
             return;
         }
@@ -60,13 +61,13 @@ export default function Home({ navigation }: { navigation: any }) {
 
     function handleRename() {
         // check if the project name is empty
-        if (newProjectName === "") {
+        if (renamedProjectName === "") {
             return;
         }
 
         // check if the project already exists
         const isProjectExists = projectContext?.projects.find(
-            (project) => project.name === newProjectName
+            (project) => project.name === renamedProjectName
         );
         if (isProjectExists) {
             return;
@@ -77,7 +78,7 @@ export default function Home({ navigation }: { navigation: any }) {
             if (project.name === renderDialog?.toString()) {
                 return {
                     ...project,
-                    name: newProjectName,
+                    name: renamedProjectName,
                 };
             }
             return project;
@@ -92,7 +93,7 @@ export default function Home({ navigation }: { navigation: any }) {
             if (todo.project === renderDialog?.toString()) {
                 return {
                     ...todo,
-                    project: newProjectName,
+                    project: renamedProjectName,
                 };
             }
             return todo;
@@ -107,7 +108,7 @@ export default function Home({ navigation }: { navigation: any }) {
         // update the project state
         projectContext?.setProjects(newProjects);
         // clear the project name
-        setNewProjectName("");
+        setRenamedProjectName("");
         // close the dialog
         setRenderDialog(null);
     }
@@ -150,8 +151,8 @@ export default function Home({ navigation }: { navigation: any }) {
                     {renderDialog?.toString()}
                 </Dialog.Description>
                 <Dialog.Input
-                    value={newProjectName}
-                    onChangeText={setNewProjectName}
+                    value={renamedProjectName}
+                    onChangeText={setRenamedProjectName}
                 />
                 <Dialog.Button label="Cancel" onPress={handleCancelRename} />
                 <Dialog.Button
