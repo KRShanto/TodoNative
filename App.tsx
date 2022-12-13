@@ -28,6 +28,7 @@ import colors from "./constants/colors";
 
 const Stack = createNativeStackNavigator();
 
+// TODO: set security rules for the database
 export default function App() {
     const [projects, setProjects] = useState<ProjectType[]>([]);
     const [todos, setTodos] = useState<TodoType[]>([]);
