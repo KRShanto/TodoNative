@@ -8,20 +8,28 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useContext } from "react";
-import { TodoProjectContext, TodoType } from "../constants/contexts";
+import { ProjectContext, TodoContext, TodoType } from "../constants/contexts";
 import React from "react";
 import colors from "../constants/colors";
 
 export default function Project({ route }: { route: any }) {
     const [todoText, setTodoText] = useState("");
-    const projectContext = useContext(TodoProjectContext);
+    // contexts
+    const projectContext = useContext(ProjectContext);
+    const todoContext = useContext(TodoContext);
+    // ref of the todo text input
     const todoTextRef = React.useRef<TextInput>(null);
-    const projectName = route.params.projectName;
-    const currentProject = projectContext?.projects.find(
-        (project) => project.name === projectName
+    // current project name
+    const projectName: string = route.params.projectName;
+    // const currentProject = projectContext?.projects.find(
+    //     (project) => project.name === projectName
+    // );
+    // current todos
+    const currentTodos = todoContext?.todos.filter(
+        (todo) => todo.project === projectName
     );
 
-    const sortedTodos = currentProject?.todos.sort((a, b) => {
+    const sortedTodos = currentTodos?.sort((a, b) => {
         if (a.completed && !b.completed) {
             return 1;
         }
@@ -41,27 +49,17 @@ export default function Project({ route }: { route: any }) {
         }
         // create a new todo
         const newTodo = {
-            name: todoText,
+            task: todoText,
             completed: false,
+            project: projectName,
         };
 
-        if (!currentProject) {
+        if (!currentTodos) {
             return;
         }
 
-        // create a new project with the new todo
-        const newProject = {
-            name: projectName,
-            todos: [...currentProject.todos, newTodo],
-        };
-
-        // remove the old project
-        const newProjects = projectContext.projects.filter(
-            (project) => project.name !== projectName
-        );
-
-        // add the new project to the projects array
-        projectContext.setProjects([...newProjects, newProject]);
+        // add the new todo to the todos array
+        todoContext?.setTodos([...currentTodos, newTodo]);
 
         // clear the todo text
         setTodoText("");
@@ -70,65 +68,47 @@ export default function Project({ route }: { route: any }) {
         todoTextRef.current?.blur();
     }
 
-    function handleCompleteTodo(item: TodoType) {
-        if (!currentProject) {
+    function handleCompleteTodo(todoTask: string) {
+        if (!currentTodos) {
             return;
         }
 
-        // create a new project with the new todo
-        const newProject = {
-            name: projectName,
-            todos: currentProject.todos.map((todo) => {
-                if (todo.name === item.name) {
-                    return {
-                        name: todo.name,
-                        completed: true,
-                    };
-                }
-                return todo;
-            }),
+        // create a new todo with the new todo
+        const newTodo = {
+            task: todoTask,
+            completed: true,
+            project: projectName,
         };
 
-        // remove the old project
-        const newProjects = projectContext?.projects.filter(
-            (project) => project.name !== projectName
+        // remove the old todo
+        const newTodos = todoContext?.todos.filter(
+            (todo) => todo.task !== todoTask
         );
 
-        if (!newProjects) {
+        if (!newTodos) {
             return;
         }
 
-        // add the new project to the projects array
-        projectContext?.setProjects([...newProjects, newProject]);
+        // add the new todo to the todos array
+        todoContext?.setTodos([...newTodos, newTodo]);
     }
 
     function handleDeleteTodo(item: TodoType) {
-        if (!currentProject) {
+        if (!currentTodos) {
             return;
         }
 
-        // create a new project with the new todo
-        const newProject = {
-            name: projectName,
-            todos: currentProject.todos.filter((todo) => {
-                if (todo.name === item.name) {
-                    return false;
-                }
-                return true;
-            }),
-        };
-
-        // remove the old project
-        const newProjects = projectContext?.projects.filter(
-            (project) => project.name !== projectName
+        // create a new list of todos without the deleted todo
+        const newTodos = todoContext?.todos.filter(
+            (todo) => todo.task !== item.task
         );
 
-        if (!newProjects) {
+        if (!newTodos) {
             return;
         }
 
-        // add the new project to the projects array
-        projectContext?.setProjects([...newProjects, newProject]);
+        // update the todos array
+        todoContext?.setTodos(newTodos);
     }
 
     return (
@@ -228,7 +208,7 @@ export default function Project({ route }: { route: any }) {
                                         marginLeft: 10,
                                     }}
                                 >
-                                    {item.name}
+                                    {item.task}
                                 </Text>
                             ) : (
                                 <Text
@@ -240,7 +220,7 @@ export default function Project({ route }: { route: any }) {
                                         textDecorationLine: "line-through",
                                     }}
                                 >
-                                    {item.name}
+                                    {item.task}
                                 </Text>
                             )}
                             {!item.completed ? (
@@ -257,7 +237,9 @@ export default function Project({ route }: { route: any }) {
                                             paddingHorizontal: 20,
                                             borderRadius: 5,
                                         }}
-                                        onPress={() => handleCompleteTodo(item)}
+                                        onPress={() =>
+                                            handleCompleteTodo(item.task)
+                                        }
                                     >
                                         <Text
                                             style={{

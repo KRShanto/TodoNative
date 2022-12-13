@@ -18,56 +18,50 @@ import React from "react";
 import { useState } from "react";
 import Home from "./screens/Home";
 import Project from "./screens/Project";
-import { TodoProjectContext } from "./constants/contexts";
+import {
+    TodoContext,
+    ProjectContext,
+    ProjectType,
+    TodoType,
+} from "./constants/contexts";
 import colors from "./constants/colors";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-    const [projects, setProjects] = useState([
-        {
-            name: "Everyday Tasks",
-            todos: [
-                {
-                    name: "Brush Teeth",
-                    completed: false,
-                },
-                {
-                    name: "Feed cat",
-                    completed: false,
-                },
-            ],
-        },
-    ]);
+    const [projects, setProjects] = useState<ProjectType[]>([]);
+    const [todos, setTodos] = useState<TodoType[]>([]);
 
     return (
-        <TodoProjectContext.Provider value={{ projects, setProjects }}>
-            <NavigationContainer>
-                <Stack.Navigator
-                    screenOptions={{
-                        headerStyle: {
-                            backgroundColor: colors.navbar.bg,
-                        },
-                        headerTintColor: colors.navbar.text,
-                    }}
-                >
-                    <Stack.Screen
-                        name="Home"
-                        component={Home}
-                        options={{
-                            title: "Home",
+        <TodoContext.Provider value={{ todos, setTodos }}>
+            <ProjectContext.Provider value={{ projects, setProjects }}>
+                <NavigationContainer>
+                    <Stack.Navigator
+                        screenOptions={{
+                            headerStyle: {
+                                backgroundColor: colors.navbar.bg,
+                            },
+                            headerTintColor: colors.navbar.text,
                         }}
-                    />
-                    <Stack.Screen
-                        name="Project"
-                        component={Project}
-                        options={({ route }) => ({
-                            // @ts-ignore
-                            title: route.params.projectName,
-                        })}
-                    />
-                </Stack.Navigator>
-            </NavigationContainer>
-        </TodoProjectContext.Provider>
+                    >
+                        <Stack.Screen
+                            name="Home"
+                            component={Home}
+                            options={{
+                                title: "Home",
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Project"
+                            component={Project}
+                            options={({ route }) => ({
+                                // @ts-ignore
+                                title: route.params.projectName,
+                            })}
+                        />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </ProjectContext.Provider>
+        </TodoContext.Provider>
     );
 }

@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useContext } from "react";
-import { TodoProjectContext, TodoProjectType } from "../constants/contexts";
+// import { TodoProjectContext, TodoProjectType } from "../constants/contexts";
+import { TodoContext, ProjectContext } from "../constants/contexts";
 import Dialog from "react-native-dialog";
 import React from "react";
 import colors from "../constants/colors";
@@ -17,10 +18,13 @@ import colors from "../constants/colors";
 export default function Home({ navigation }: { navigation: any }) {
     const [projectText, setProjectText] = useState("");
     const [newProjectName, setNewProjectName] = useState("");
-    const [renderDialog, setRenderDialog] = useState<TodoProjectType | null>(
+    const [renderDialog, setRenderDialog] = useState<string | null>(
+        // name | null
         null
     );
-    const projectContext = useContext(TodoProjectContext);
+
+    const projectContext = useContext(ProjectContext);
+    const todoContext = useContext(TodoContext);
     const projectTextRef = React.useRef<TextInput>(null);
 
     function handleCreatProject() {
@@ -45,7 +49,6 @@ export default function Home({ navigation }: { navigation: any }) {
         // create a new project
         const newProject = {
             name: projectText,
-            todos: [],
         };
         // add the new project to the projects array
         setProjects([...projects, newProject]);
@@ -55,7 +58,7 @@ export default function Home({ navigation }: { navigation: any }) {
         projectTextRef.current?.blur();
     }
 
-    function handleOk() {
+    function handleRename() {
         // check if the project name is empty
         if (newProjectName === "") {
             return;
@@ -71,7 +74,7 @@ export default function Home({ navigation }: { navigation: any }) {
 
         // rename the project
         const newProjects = projectContext?.projects.map((project) => {
-            if (project.name === renderDialog?.name) {
+            if (project.name === renderDialog?.toString()) {
                 return {
                     ...project,
                     name: newProjectName,
@@ -84,31 +87,57 @@ export default function Home({ navigation }: { navigation: any }) {
             return;
         }
 
-        // update the state
-        projectContext?.setProjects(newProjects);
+        // rename the todos of the project
+        const newTodos = todoContext?.todos.map((todo) => {
+            if (todo.project === renderDialog?.toString()) {
+                return {
+                    ...todo,
+                    project: newProjectName,
+                };
+            }
+            return todo;
+        });
 
+        if (!newTodos) {
+            return;
+        }
+
+        // update the todo state
+        todoContext?.setTodos(newTodos);
+        // update the project state
+        projectContext?.setProjects(newProjects);
         // clear the project name
         setNewProjectName("");
-
         // close the dialog
         setRenderDialog(null);
     }
 
-    function handleCancel() {
+    function handleCancelRename() {
         // close the dialog
         setRenderDialog(null);
     }
 
-    function handleDeleteProject(item: TodoProjectType) {
+    function handleDeleteProject(projectName: string) {
         // delete the project
         const newProjects = projectContext?.projects.filter(
-            (project) => project.name !== item.name
+            (project) => project.name !== projectName
+        );
+
+        // delete the todos of the project
+        const newTodos = todoContext?.todos.filter(
+            (todo) => todo.project !== projectName
         );
 
         if (!newProjects) {
             return;
         }
+        if (!newTodos) {
+            return;
+        }
 
+        // update the todo state
+        todoContext?.setTodos(newTodos);
+        // update the project state
         projectContext?.setProjects(newProjects);
     }
 
@@ -118,16 +147,16 @@ export default function Home({ navigation }: { navigation: any }) {
                 <Dialog.Title>Rename project</Dialog.Title>
                 <Dialog.Description>
                     Enter the new project name for the project{" "}
-                    {renderDialog?.name}
+                    {renderDialog?.toString()}
                 </Dialog.Description>
                 <Dialog.Input
                     value={newProjectName}
                     onChangeText={setNewProjectName}
                 />
-                <Dialog.Button label="Cancel" onPress={handleCancel} />
+                <Dialog.Button label="Cancel" onPress={handleCancelRename} />
                 <Dialog.Button
                     label="OK"
-                    onPress={() => (renderDialog ? handleOk() : null)}
+                    onPress={() => (renderDialog ? handleRename() : null)}
                 />
             </Dialog.Container>
 
@@ -265,7 +294,7 @@ export default function Home({ navigation }: { navigation: any }) {
                                             borderRadius: 5,
                                         }}
                                         onPress={() =>
-                                            handleDeleteProject(item)
+                                            handleDeleteProject(item.name)
                                         }
                                     >
                                         <Text
@@ -285,7 +314,7 @@ export default function Home({ navigation }: { navigation: any }) {
                                             borderRadius: 5,
                                         }}
                                         onPress={() => {
-                                            setRenderDialog(item);
+                                            setRenderDialog(item.name);
                                         }}
                                     >
                                         <Text
