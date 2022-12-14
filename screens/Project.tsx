@@ -14,6 +14,8 @@ import { colors } from "../constants/styles";
 import updateTodo from "../utils/firebase/todos/updateTodos";
 import deleteTodo from "../utils/firebase/todos/deleteTodo";
 import createTodo from "../utils/firebase/todos/createTodo";
+import Form from "../components/form/Form";
+import FormInput from "../components/form/FormInput";
 
 export default function Project({ route }: { route: any }) {
     const [todoText, setTodoText] = useState("");
@@ -145,59 +147,21 @@ export default function Project({ route }: { route: any }) {
                 keyboardShouldPersistTaps="always"
                 ListHeaderComponent={
                     <>
-                        <View>
-                            <Text
-                                style={{
-                                    fontSize: 20,
-                                    fontWeight: "bold",
-                                    color: "#25a88a",
-                                    textAlign: "center",
-                                }}
-                            >
-                                Create a new todo
-                            </Text>
-                            <TextInput
-                                onChangeText={setTodoText}
+                        <Form
+                            title="Create a new todo"
+                            handleSubmit={handleCreateTodo}
+                        >
+                            <FormInput
                                 value={todoText}
+                                setState={setTodoText}
                                 placeholder="Enter your task"
-                                placeholderTextColor="gray"
-                                keyboardType="default"
-                                ref={todoTextRef}
-                                style={{
-                                    color: "white",
-                                    fontSize: 20,
-                                    marginVertical: 10,
-                                    borderColor: "white",
-                                    borderBottomWidth: 1,
-                                    width: "95%",
-                                    padding: 5,
-                                    alignSelf: "center",
+                                props={{
+                                    onSubmitEditing: { handleCreateTodo },
+                                    ref: { todoTextRef },
                                 }}
                             />
-                            {/* <Button title="Create" onPress={handleCreateTodo} /> */}
-                            <Pressable
-                                style={{
-                                    padding: 5,
-                                    width: 90,
-                                    alignSelf: "center",
-                                    borderRadius: 5,
-                                    backgroundColor: "#25a860",
-                                }}
-                                onPress={handleCreateTodo}
-                            >
-                                <Text
-                                    style={{
-                                        color: "white",
-                                        textAlign: "center",
-                                        fontSize: 17,
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    {" "}
-                                    Create{" "}
-                                </Text>
-                            </Pressable>
-                        </View>
+                        </Form>
+
                         <Text
                             style={{
                                 fontSize: 27,

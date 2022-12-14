@@ -22,17 +22,6 @@ export default function Form({
                 alignSelf: "center",
             }}
         >
-            {/* <Text
-                style={{
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    color: "#25a88a",
-                    textAlign: "center",
-                }}
-            >
-                Create a new project
-            </Text> */}
-
             {title && (
                 <Text
                     style={{
@@ -46,32 +35,8 @@ export default function Form({
                 </Text>
             )}
 
-            {/* <TextInput
-                placeholder="Project name"
-                placeholderTextColor="gray"
-                onChangeText={setProjectText}
-                keyboardType="default"
-                onBlur={() => console.log("blur")}
-                onSubmitEditing={handleCreateProject}
-                value={projectText}
-                ref={projectTextRef}
-                cursorColor="cyan"
-                returnKeyLabel="Create"
-                style={{
-                    color: "white",
-                    fontSize: 20,
-                    marginVertical: 10,
-                    borderColor: "white",
-                    borderBottomWidth: 1,
-                    width: "95%",
-                    padding: 5,
-                    alignSelf: "center",
-                }}
-            /> */}
-
             {children}
 
-            {/* <Button title="Create" onPress={handleCreatProject} /> */}
             <Pressable
                 style={{
                     padding: 5,
@@ -79,11 +44,10 @@ export default function Form({
                     alignSelf: "center",
                     borderRadius: 5,
                     backgroundColor: "#25a860",
+                    marginTop: 10,
                 }}
                 onPress={() => {
-                    // handleCreateProject();
                     handleSubmit();
-                    // console.log("create");
                 }}
             >
                 <Text

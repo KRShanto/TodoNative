@@ -18,9 +18,7 @@ export default function FormInput({
             placeholderTextColor="gray"
             onChangeText={setState}
             keyboardType="default"
-            // onSubmitEditing={handleCreateProject}
             value={value}
-            // ref={projectTextRef}
             cursorColor="cyan"
             style={{
                 color: "white",

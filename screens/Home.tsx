@@ -16,6 +16,8 @@ import { colors, styles } from "../constants/styles";
 import createProject from "../utils/firebase/projects/createProject";
 import removeProject from "../utils/firebase/projects/removeProject";
 import renameProject from "../utils/firebase/projects/renameProject";
+import Form from "../components/form/Form";
+import FormInput from "../components/form/FormInput";
 
 export default function Home({ navigation }: { navigation: any }) {
     const [projectText, setProjectText] = useState("");
@@ -174,59 +176,20 @@ export default function Home({ navigation }: { navigation: any }) {
                 keyboardShouldPersistTaps="always"
                 ListHeaderComponent={
                     <>
-                        {/* Show a form to create new projects */}
-                        <View>
-                            <Text
-                                style={{
-                                    fontSize: 20,
-                                    fontWeight: "bold",
-                                    color: "#25a88a",
-                                    textAlign: "center",
-                                }}
-                            >
-                                Create a new project
-                            </Text>
-                            <TextInput
-                                placeholder="Project name"
-                                placeholderTextColor="gray"
-                                onChangeText={setProjectText}
-                                keyboardType="default"
+                        <Form
+                            title="Create a new project"
+                            handleSubmit={handleCreateProject}
+                        >
+                            <FormInput
                                 value={projectText}
-                                ref={projectTextRef}
-                                style={{
-                                    color: "white",
-                                    fontSize: 20,
-                                    marginVertical: 10,
-                                    borderColor: "white",
-                                    borderBottomWidth: 1,
-                                    width: "95%",
-                                    padding: 5,
-                                    alignSelf: "center",
+                                setState={setProjectText}
+                                placeholder="Project name"
+                                props={{
+                                    onSubmitEditing: { handleCreateProject },
+                                    ref: { projectTextRef },
                                 }}
                             />
-
-                            <Pressable
-                                style={{
-                                    padding: 5,
-                                    width: 90,
-                                    alignSelf: "center",
-                                    borderRadius: 5,
-                                    backgroundColor: "#25a860",
-                                }}
-                                onPress={handleCreateProject}
-                            >
-                                <Text
-                                    style={{
-                                        color: "white",
-                                        textAlign: "center",
-                                        fontSize: 17,
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    Create
-                                </Text>
-                            </Pressable>
-                        </View>
+                        </Form>
 
                         <Text
                             style={{
