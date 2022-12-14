@@ -24,7 +24,7 @@ import {
     ProjectType,
     TodoType,
 } from "./constants/contexts";
-import colors from "./constants/colors";
+import { colors } from "./constants/styles";
 import getProjects from "./utils/firebase/projects/getProjects";
 import getTodos from "./utils/firebase/todos/getTodos";
 
@@ -32,6 +32,7 @@ const Stack = createNativeStackNavigator();
 
 // TODO: set security rules for the database
 // TODO: add a loading screen
+// TODO: use icons for buttons
 export default function App() {
     const [projects, setProjects] = useState<ProjectType[]>([]);
     const [todos, setTodos] = useState<TodoType[]>([]);

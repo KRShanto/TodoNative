@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useContext } from "react";
 import { ProjectContext, TodoContext, TodoType } from "../constants/contexts";
 import React from "react";
-import colors from "../constants/colors";
+import { colors } from "../constants/styles";
 import updateTodo from "../utils/firebase/todos/updateTodos";
 import deleteTodo from "../utils/firebase/todos/deleteTodo";
 import createTodo from "../utils/firebase/todos/createTodo";
@@ -141,202 +141,193 @@ export default function Project({ route }: { route: any }) {
 
     return (
         <View style={styles.container}>
-            <View>
-                {/* Show a form to create new todos */}
-                <Text
-                    style={{
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        color: "#25a88a",
-                        textAlign: "center",
-                    }}
-                >
-                    Create a new todo
-                </Text>
-                <TextInput
-                    onChangeText={setTodoText}
-                    value={todoText}
-                    placeholder="Enter your task"
-                    placeholderTextColor="gray"
-                    keyboardType="default"
-                    ref={todoTextRef}
-                    style={{
-                        color: "white",
-                        fontSize: 20,
-                        marginVertical: 10,
-                        borderColor: "white",
-                        borderBottomWidth: 1,
-                        width: "95%",
-                        padding: 5,
-                        alignSelf: "center",
-                    }}
-                />
-                {/* <Button title="Create" onPress={handleCreateTodo} /> */}
-                <Pressable
-                    style={{
-                        padding: 5,
-                        width: 90,
-                        alignSelf: "center",
-                        borderRadius: 5,
-                        backgroundColor: "#25a860",
-                    }}
-                    onPress={handleCreateTodo}
-                >
-                    <Text
-                        style={{
-                            color: "white",
-                            textAlign: "center",
-                            fontSize: 17,
-                            fontWeight: "bold",
-                        }}
-                    >
-                        {" "}
-                        Create{" "}
-                    </Text>
-                </Pressable>
-            </View>
-
-            {/* Show a list of todos */}
-            <View
-                style={{
-                    marginTop: 30,
-                }}
-            >
-                <Text
-                    style={{
-                        fontSize: 27,
-                        color: "#00c3ff",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        marginBottom: 10,
-                    }}
-                >
-                    Todos
-                </Text>
-                {/* TODO: Put the above code into FlatList's header prop */}
-                <FlatList
-                    data={sortedTodos}
-                    renderItem={({ item }) => (
-                        <View
+            <FlatList
+                keyboardShouldPersistTaps="always"
+                ListHeaderComponent={
+                    <>
+                        <View>
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                    color: "#25a88a",
+                                    textAlign: "center",
+                                }}
+                            >
+                                Create a new todo
+                            </Text>
+                            <TextInput
+                                onChangeText={setTodoText}
+                                value={todoText}
+                                placeholder="Enter your task"
+                                placeholderTextColor="gray"
+                                keyboardType="default"
+                                ref={todoTextRef}
+                                style={{
+                                    color: "white",
+                                    fontSize: 20,
+                                    marginVertical: 10,
+                                    borderColor: "white",
+                                    borderBottomWidth: 1,
+                                    width: "95%",
+                                    padding: 5,
+                                    alignSelf: "center",
+                                }}
+                            />
+                            {/* <Button title="Create" onPress={handleCreateTodo} /> */}
+                            <Pressable
+                                style={{
+                                    padding: 5,
+                                    width: 90,
+                                    alignSelf: "center",
+                                    borderRadius: 5,
+                                    backgroundColor: "#25a860",
+                                }}
+                                onPress={handleCreateTodo}
+                            >
+                                <Text
+                                    style={{
+                                        color: "white",
+                                        textAlign: "center",
+                                        fontSize: 17,
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    {" "}
+                                    Create{" "}
+                                </Text>
+                            </Pressable>
+                        </View>
+                        <Text
                             style={{
-                                width: "95%",
-                                marginVertical: 2,
-                                borderRadius: 5,
-                                borderColor: "white",
-                                borderWidth: 1,
-                                alignSelf: "center",
-                                padding: 10,
+                                fontSize: 27,
+                                color: "#00c3ff",
+                                fontWeight: "bold",
+                                textAlign: "center",
+                                marginBottom: 10,
+                                marginTop: 15,
                             }}
                         >
-                            {!item.completed ? (
-                                <Text
+                            Todos
+                        </Text>
+                    </>
+                }
+                data={sortedTodos}
+                renderItem={({ item }) => (
+                    <View
+                        style={{
+                            width: "95%",
+                            marginVertical: 2,
+                            borderRadius: 5,
+                            borderColor: "white",
+                            borderWidth: 1,
+                            alignSelf: "center",
+                            padding: 10,
+                        }}
+                    >
+                        {!item.completed ? (
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    color: "white",
+                                    marginBottom: 10,
+                                    marginLeft: 10,
+                                }}
+                            >
+                                {item.task}
+                            </Text>
+                        ) : (
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    color: "white",
+                                    marginBottom: 10,
+                                    marginLeft: 10,
+                                    textDecorationLine: "line-through",
+                                }}
+                            >
+                                {item.task}
+                            </Text>
+                        )}
+                        {!item.completed ? (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                }}
+                            >
+                                <Pressable
                                     style={{
-                                        fontSize: 20,
-                                        color: "white",
-                                        marginBottom: 10,
-                                        marginLeft: 10,
+                                        backgroundColor: "#0948ad",
+                                        paddingVertical: 3,
+                                        paddingHorizontal: 20,
+                                        borderRadius: 5,
                                     }}
+                                    onPress={() => handleCompleteTodo(item.id)}
                                 >
-                                    {item.task}
-                                </Text>
-                            ) : (
-                                <Text
-                                    style={{
-                                        fontSize: 20,
-                                        color: "white",
-                                        marginBottom: 10,
-                                        marginLeft: 10,
-                                        textDecorationLine: "line-through",
-                                    }}
-                                >
-                                    {item.task}
-                                </Text>
-                            )}
-                            {!item.completed ? (
-                                <View
-                                    style={{
-                                        flexDirection: "row",
-                                        justifyContent: "space-around",
-                                    }}
-                                >
-                                    <Pressable
+                                    <Text
                                         style={{
-                                            backgroundColor: "#0948ad",
-                                            paddingVertical: 3,
-                                            paddingHorizontal: 20,
-                                            borderRadius: 5,
+                                            color: "white",
+                                            fontWeight: "bold",
                                         }}
-                                        onPress={() =>
-                                            handleCompleteTodo(item.id)
-                                        }
                                     >
-                                        <Text
-                                            style={{
-                                                color: "white",
-                                                fontWeight: "bold",
-                                            }}
-                                        >
-                                            {" "}
-                                            Complete{" "}
-                                        </Text>
-                                    </Pressable>
+                                        {" "}
+                                        Complete{" "}
+                                    </Text>
+                                </Pressable>
 
-                                    <Pressable
-                                        style={{
-                                            backgroundColor: "#990814",
-                                            paddingVertical: 3,
-                                            paddingHorizontal: 20,
-                                            borderRadius: 5,
-                                        }}
-                                        onPress={() =>
-                                            handleDeleteTodo(item.id)
-                                        }
-                                    >
-                                        <Text
-                                            style={{
-                                                color: "white",
-                                                fontWeight: "bold",
-                                            }}
-                                        >
-                                            {" "}
-                                            Delete{" "}
-                                        </Text>
-                                    </Pressable>
-                                </View>
-                            ) : (
-                                <View
+                                <Pressable
                                     style={{
-                                        flexDirection: "row",
-                                        justifyContent: "space-around",
+                                        backgroundColor: "#990814",
+                                        paddingVertical: 3,
+                                        paddingHorizontal: 20,
+                                        borderRadius: 5,
                                     }}
+                                    onPress={() => handleDeleteTodo(item.id)}
                                 >
-                                    <Pressable
+                                    <Text
                                         style={{
-                                            backgroundColor: "#990814",
-                                            paddingVertical: 3,
-                                            paddingHorizontal: 20,
-                                            borderRadius: 5,
+                                            color: "white",
+                                            fontWeight: "bold",
                                         }}
-                                        onPress={() =>
-                                            handleDeleteTodo(item.id)
-                                        }
                                     >
-                                        <Text
-                                            style={{
-                                                color: "white",
-                                                fontWeight: "bold",
-                                            }}
-                                        >
-                                            {" "}
-                                            Delete{" "}
-                                        </Text>
-                                    </Pressable>
-                                </View>
-                            )}
-                        </View>
-                    )}
-                />
-            </View>
+                                        {" "}
+                                        Delete{" "}
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        ) : (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                }}
+                            >
+                                <Pressable
+                                    style={{
+                                        backgroundColor: "#990814",
+                                        paddingVertical: 3,
+                                        paddingHorizontal: 20,
+                                        borderRadius: 5,
+                                    }}
+                                    onPress={() => handleDeleteTodo(item.id)}
+                                >
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        {" "}
+                                        Delete{" "}
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        )}
+                    </View>
+                )}
+            />
+            {/* </View> */}
         </View>
     );
 }
