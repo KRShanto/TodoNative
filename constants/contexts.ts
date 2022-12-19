@@ -3,6 +3,7 @@ import React from "react";
 export type ProjectType = {
     id: string;
     name: string;
+    userId: string;
 };
 
 export type TodoType = {
@@ -10,6 +11,13 @@ export type TodoType = {
     task: string;
     completed: boolean;
     projectId: string;
+    userId: string;
+};
+
+export type UserType = {
+    id: string;
+    name: string;
+    email: string;
 };
 
 export type TodoContextType = {
@@ -27,3 +35,10 @@ export type ProjectContextType = {
 export const ProjectContext = React.createContext<ProjectContextType | null>(
     null
 );
+
+export type UserContextType = {
+    user: UserType | null;
+    setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
+};
+
+export const UserContext = React.createContext<UserContextType | null>(null);
