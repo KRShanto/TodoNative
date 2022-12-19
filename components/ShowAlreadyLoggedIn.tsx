@@ -15,14 +15,12 @@ export default function ShowAlreadyLoggedIn({
       <Pressable
         style={{
           padding: 10,
-          // width: 90,
           alignSelf: "center",
           borderRadius: 5,
           backgroundColor: "#25a860",
           marginTop: 10,
         }}
         onPress={() => {
-          // go home
           navigation.navigate("Home");
         }}
       >
@@ -40,14 +38,12 @@ export default function ShowAlreadyLoggedIn({
       <Pressable
         style={{
           padding: 10,
-          // width: 90,
           alignSelf: "center",
           borderRadius: 5,
           backgroundColor: "red",
           marginTop: 10,
         }}
         onPress={() => {
-          // logout
           firebase.auth().signOut();
         }}
       >

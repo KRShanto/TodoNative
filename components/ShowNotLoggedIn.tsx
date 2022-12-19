@@ -5,7 +5,6 @@ export default function ShowNotLoggedIn({ navigation }: { navigation: any }) {
   return (
     <View
       style={{
-        // make it center vertically
         flex: 1,
         justifyContent: "center",
       }}

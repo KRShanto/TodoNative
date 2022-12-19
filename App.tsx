@@ -12,9 +12,7 @@
 // users can view the number of todos in each project
 // There also will be a about screen
 
-import { SafeAreaView, useSafeArea } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, TouchableOpacity, Text, Pressable } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -48,30 +46,6 @@ export default function App() {
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [todos, setTodos] = useState<TodoType[]>([]);
 
-  //   const safeArea = useSafeArea();
-  //   const navbarWidth = safeArea.left + safeArea.right;
-
-  // const navigation = useNavigation();
-
-  // useEffect(() => {
-  //     async function getProjectsFromFirebase() {
-  //         const projects = await getProjects();
-  //         setProjects(projects);
-  //     }
-  //     getProjectsFromFirebase();
-  // }, []);
-
-  // useEffect(() => {
-  //     async function getTodosFromFirebase() {
-  //         const todos = await getTodos();
-  //         console.log("Collection todos: ", todos);
-  //         setTodos(todos);
-  //     }
-  //     getTodosFromFirebase();
-  // }, []);
-
-  // Check if the user is logged in
-  // If not, redirect to the login screen
   useEffect(() => {
     async function checkIfUserIsLoggedIn() {
       const subscriber = firebase.auth().onAuthStateChanged((user) => {
@@ -86,10 +60,6 @@ export default function App() {
             });
           }
         } else {
-          // redirect to login screen
-          // @ts-ignore
-          // navigation.navigate("Login");
-
           setUser(null);
           setProjects([]);
           setTodos([]);
@@ -130,7 +100,6 @@ export default function App() {
     <TodoContext.Provider value={{ todos, setTodos }}>
       <ProjectContext.Provider value={{ projects, setProjects }}>
         <UserContext.Provider value={{ user, setUser }}>
-          {/* <SafeAreaView> */}
           <NavigationContainer>
             <Stack.Navigator
               screenOptions={(options) => {
@@ -187,7 +156,6 @@ export default function App() {
               />
             </Stack.Navigator>
           </NavigationContainer>
-          {/* </SafeAreaView> */}
         </UserContext.Provider>
       </ProjectContext.Provider>
     </TodoContext.Provider>

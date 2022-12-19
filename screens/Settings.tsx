@@ -1,4 +1,4 @@
-import { View, Text, Button, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React, { useContext } from "react";
 import { UserContext } from "../constants/contexts";
 import { firebase } from "@react-native-firebase/auth";
@@ -19,8 +19,6 @@ export default function Settings({ navigation }: { navigation: any }) {
       style={{
         backgroundColor: colors.body.bg,
         flex: 1,
-        // justifyContent: "center",
-        // alignItems: "center",
       }}
     >
       {userContext?.user ? (
@@ -33,8 +31,6 @@ export default function Settings({ navigation }: { navigation: any }) {
               textAlign: "center",
             }}
           >
-            {/* Your name is {userContext.user.name} */}
-            {/* make the name bold */}
             Your name is{" "}
             <Text style={{ fontWeight: "bold" }}>{userContext.user.name}</Text>
           </Text>
@@ -46,8 +42,6 @@ export default function Settings({ navigation }: { navigation: any }) {
               textAlign: "center",
             }}
           >
-            {/* Your email is {userContext.user.email} */}
-            {/* make the email bold */}
             Your email is{" "}
             <Text style={{ fontWeight: "bold" }}>{userContext.user.email}</Text>
           </Text>
